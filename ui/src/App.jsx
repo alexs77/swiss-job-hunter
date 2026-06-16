@@ -777,7 +777,7 @@ export default function App() {
                   </div>
                   {/* keyword presets */}
                   <div style={{display:"flex",gap:3,marginBottom:4}}>
-                    {Object.entries(KEYWORD_PRESETS).map(([dir, kws])=>(
+                    {Object.entries(keywordPresets).map(([dir, kws])=>(
                       <button key={dir} onClick={()=>{ setSearchKws(kws); setSearchKwInput(""); setDirection(dir); }} style={{
                         flex:1,fontSize:8,padding:"3px 0",borderRadius:3,border:"1px solid #2e7d5230",
                         background:"#2e7d5210",color:"#2e7d52",cursor:"pointer",
