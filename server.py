@@ -18,6 +18,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy import func
 
@@ -33,6 +35,13 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+UI_DIST_DIR = Path(__file__).parent / "ui" / "dist"
+
+
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
 
 
 @app.get("/directions")
@@ -54,6 +63,7 @@ def get_config():
     return {
         "default_keyword": s.default_keyword,
         "default_location": s.default_location,
+        "keyword_presets": s.keyword_presets,
     }
 
 
@@ -1034,3 +1044,20 @@ def get_tracker():
                 "notes": app.notes if app else None,
             })
     return result
+
+
+if UI_DIST_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=UI_DIST_DIR / "assets"), name="ui-assets")
+
+    @app.get("/")
+    def serve_ui_index():
+        return FileResponse(UI_DIST_DIR / "index.html")
+
+    @app.get("/{full_path:path}")
+    def serve_ui_paths(full_path: str):
+        if full_path.startswith(("jobs", "stats", "config", "directions", "companies", "tracker", "run")):
+            raise HTTPException(404, "Not found")
+        candidate = UI_DIST_DIR / full_path
+        if candidate.is_file():
+            return FileResponse(candidate)
+        return FileResponse(UI_DIST_DIR / "index.html")
