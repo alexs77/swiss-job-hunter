@@ -36,8 +36,6 @@ const SOURCES = ["jobs.ch","jobscout24.ch","swissdevjobs.ch","jobup.ch","züri.j
 
 const DIRECTIONS_FALLBACK = ["agent", "perception"];
 
-const [keywordPresets, setKeywordPresets] = useState({});
-
 const APPLY_METHODS = [
   { id: "email",    label: "Email",    icon: "📧" },
   { id: "form",     label: "Web Form", icon: "🌐" },
@@ -463,6 +461,7 @@ export default function App() {
   const [coverLang, setCoverLang] = useState("en");
   const [threshold, setThreshold] = useState(10); // percent — shared by archive/purge/filter/lookup
   const [searchPages, setSearchPages] = useState(3);
+  const [keywordPresets, setKeywordPresets] = useState({});
   const [linkedinTimeRange, setLinkedinTimeRange] = useState("r604800");
   const [linkedinExpLevel, setLinkedinExpLevel] = useState("3,4");
   const [direction, setDirection] = useState("all");
